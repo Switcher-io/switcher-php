@@ -15,7 +15,7 @@ $urlId = 'url identifier of the switch, e.g. "abc123" in https://dmsr.io/abc123.
 $key = 'switch key';
 
 //initialize the api
-$sw = new SwitcherIO\DeadManSwitch($urlId, $key);
+$sw = new \SwitcherIO\DeadManSwitch($urlId, $key);
 
 //call the /start endpoint (optional - only used if your switch has a max run time set)
 $sw->start();
@@ -31,10 +31,11 @@ $sw->pause();
 
 ## Error handling
 
-Exceptions will be thrown if an error occurs.
+Exceptions will be thrown if an error occurs or Switcher.io does respond that the call is ok, with the exception 
+message detailing the issue.
 
 ```php
-$sw = new SwitcherIO\DeadManSwitch('url id', 'key');
+$sw = new \SwitcherIO\DeadManSwitch('url id', 'key');
 
 try {
     $sw->complete();
