@@ -71,7 +71,7 @@ class DeadManSwitch
      */
     private function doCall($action)
     {
-        $c = curl_init('https://app.switcher.io/public-api/dead-man-switch/'.$this->urlId.'/'.$action);
+        $c = curl_init('https://dmsr.io/'.$this->urlId.'/'.$action);
 
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($c, CURLOPT_POSTFIELDS, ['key' => $this->key]);
