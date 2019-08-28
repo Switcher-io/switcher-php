@@ -31,7 +31,7 @@ $sw->pause();
 
 ## Error handling
 
-Exceptions will be thrown if an error occurs or Switcher.io does respond that the call is ok, with the exception 
+Exceptions will be thrown if an error occurs, or if Switcher.io does respond that the call is ok. The exception 
 message detailing the issue.
 
 ```php
@@ -41,7 +41,7 @@ try {
     $sw->complete();
 } catch (\SwitcherIO\SwitcherException $e) {
 
-    if ($e->getMessage() == 'Switch not found (404)') {
+    if ($e->getMessage() === 'Switch not found (404)') {
         //oops, you either got the url id or key wrong...
     }
 
