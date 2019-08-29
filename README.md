@@ -17,12 +17,12 @@ $key = 'switch key';
 //initialize the api
 $sw = new \SwitcherIO\DeadManSwitch($urlId, $key);
 
-//call the /start endpoint (optional - only used if your switch has a max run time set)
+//call the /start endpoint to signal your job started (optional - only used if your switch has a max run time set)
 $sw->start();
 
-//run the task
+//your job code goes here
 
-//call /complete to notifiy Switcher.io the task has finished
+//call /complete to notifiy Switcher.io the job has finished
 $sw->complete();
 
 //you can also pause the switch
