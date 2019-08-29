@@ -1,6 +1,6 @@
 {
     "name": "switcher-io/switcher-php",
-    "description": "PHP wrapper for switcher.io api",
+    "description": "PHP wrapper for switcher.io API",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "dev",
