@@ -32,7 +32,7 @@ $sw->pause();
 ## Error handling
 
 Exceptions will be thrown if an error occurs, or if Switcher.io does respond that the call is ok. The exception 
-message detailing the issue.
+message will give detail on the issue.
 
 ```php
 $sw = new \SwitcherIO\DeadManSwitch('url id', 'key');
