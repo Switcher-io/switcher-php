@@ -104,6 +104,8 @@ class DeadManSwitch
             //stop retry if curl gets a response and http status is not 5xx
             if ($response && $httpStatus < 500) {
                 break;
+            } else if ($httpStatus >= 500) {
+                sleep(pow(2, $i));
             }
         }
 
