@@ -19,13 +19,31 @@ class DeadManSwitch
     private $urlId;
 
     /**
+     * number of times to retry failed api request
+     *
+     * @var integer
+     */
+    private $retry;
+
+    /**
+     * curl timeouts
+     *
+     * @var integer
+     */
+    private $timeout;
+
+    /**
      * @param string $urlId
      * @param string $key
+     * @param integer $retry
+     * @param integer $timeout
      */
-    public function __construct($urlId, $key)
+    public function __construct($urlId, $key, $retry = 3, $timeout = 2)
     {
         $this->urlId = $urlId;
         $this->key = $key;
+        $this->retry = $retry;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -74,9 +92,20 @@ class DeadManSwitch
         $c = curl_init('https://dmsr.io/'.$this->urlId.'/'.$action);
 
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, $this->timeout); 
+        curl_setopt($c, CURLOPT_TIMEOUT, $this->timeout);
+
         curl_setopt($c, CURLOPT_POSTFIELDS, ['key' => $this->key]);
 
-        $response = curl_exec($c);
+        for ($i = 0; $i < $this->retry; $i++) {
+            $response = curl_exec($c);
+            $httpStatus = curl_getinfo($c, CURLINFO_RESPONSE_CODE);
+
+            //stop retry if curl gets a response and http status is not 5xx
+            if ($response && $httpStatus < 500) {
+                break;
+            }
+        }
 
         if (!$response) {
             throw new SwitcherException('Curl error: '.curl_error($c));
