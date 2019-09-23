@@ -48,3 +48,18 @@ try {
 }
 
 ```
+
+## Dev environments
+
+You probably don't want your local dev environment to ping a real switch. To make the library do dummy pings in
+a local or dev environment, set the url id to 'test' or 'test-error':
+
+```php
+//in this case complete() will not actually ping a switcher.io url
+$sw = new \SwitcherIO\DeadManSwitch('test', 'key-does-not-matter-for-test-url');
+$sw->complete(); 
+
+//in this case complete() will throw a \SwitcherIO\SwitcherException
+$sw = new \SwitcherIO\DeadManSwitch('test-error', 'key-does-not-matter-for-test-url');
+$sw->complete(); 
+```

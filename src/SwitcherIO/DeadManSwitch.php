@@ -89,6 +89,15 @@ class DeadManSwitch
      */
     private function doCall($action)
     {
+        //handle test urls
+        switch ($this->urlId) {
+            case 'test':
+                return;
+            
+            case 'test-error':
+                throw new SwitcherException('Test error');
+        }
+
         $c = curl_init('https://dmsr.io/'.$this->urlId.'/'.$action);
 
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
