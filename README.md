@@ -1,5 +1,7 @@
 # PHP Client for Switcher.io
 
+[![Build Status](https://travis-ci.org/switcher-io/switcher-php.svg?branch=master)](https://travis-ci.org/switcher-io/switcher-php)
+
 ## Installation
 
 Using [composer](https://packagist.org/packages/switcher-io/switcher-php):
