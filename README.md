@@ -31,20 +31,29 @@ $sw->complete();
 $sw->pause();
 ```
 
-## Error handling
+# Error handling
 
-Exceptions will be thrown if an error occurs, or if Switcher.io does respond that the call is ok. The exception 
-message will give detail on the issue.
+A `\SwitcherIO\SwitcherException` will be thrown if an error occurs, or if Switcher.io does respond that the call is ok. `SwitcherException` has a `getStatusCode` method that you should use to determine why an exception was thrown. The status
+code will match a constant of `\SwitcherIO\DeadManSwitch`.
+
+**Make sure to use error handling!** If you don't, a call to `$sw->start()` could prevent your job from finishing.
 
 ```php
-$sw = new \SwitcherIO\DeadManSwitch('url id', 'key');
+use \SwitcherIO\DeadManSwitch;
+
+$sw = new DeadManSwitch('url id', 'key');
 
 try {
-    $sw->complete();
+    $sw->start();
 } catch (\SwitcherIO\SwitcherException $e) {
 
-    if ($e->getMessage() === 'Switch not found (404)') {
+    if ($e->getStatusCode() === DeadManSwitch::STATUS_ERROR_404) {
         //oops, you either got the url id or key wrong...
+    } else if ($e->getStatusCode() === DeadManSwitch::STATUS_ERROR_START_BEFORE_COMPLETE) {
+        /*
+         * You get this error if your switch is using a max runtime, and for some reason your job
+         * starts a new run before the last run finished. If this is a problem for you, handle it here...
+         */
     }
 
 }
@@ -57,11 +66,14 @@ You probably don't want your local dev environment to ping a real switch. To mak
 a local or dev environment, set the url id to 'test' or 'test-error':
 
 ```php
-//in this case complete() will not actually ping a switcher.io url
+//in this case complete() act as if it ran succesfully, and will not actually ping a switcher.io url
 $sw = new \SwitcherIO\DeadManSwitch('test', 'key-does-not-matter-for-test-url');
 $sw->complete(); 
 
-//in this case complete() will throw a \SwitcherIO\SwitcherException
+/*
+ * In this case complete() will throw a \SwitcherIO\SwitcherException with a status code 
+ * of \SwitcherIO\DeadManSwitch::STATUS_TEST_ERROR
+ */
 $sw = new \SwitcherIO\DeadManSwitch('test-error', 'key-does-not-matter-for-test-url');
 $sw->complete(); 
 ```

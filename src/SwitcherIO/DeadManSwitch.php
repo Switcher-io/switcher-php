@@ -4,6 +4,19 @@ namespace SwitcherIO;
 
 class DeadManSwitch
 {
+    const STATUS_TEST_ERROR = 'test-error';
+
+    const STATUS_OK = 'ok';
+
+    const STATUS_ERROR_CURL = 'curl-error';
+    const STATUS_ERROR_BILL_UNPAID = 'bill-unpaid';
+    const STATUS_ERROR_SWITCH_PAUSED = 'switch-paused';
+    const STATUS_ERROR_START_PING_WITHOUT_RUNTIME = 'start-ping-without-runtime';
+    const STATUS_ERROR_START_BEFORE_COMPLETE = 'start-before-complete';
+    const STATUS_ERROR_COMPLETE_BEFORE_START = 'complete-before-start';
+    const STATUS_ERROR_404 = 'not-found';
+    const STATUS_ERROR_500 = 'server-error';
+
     /**
      * Key to post to switch url
      *
@@ -95,7 +108,7 @@ class DeadManSwitch
                 return;
             
             case 'test-error':
-                throw new SwitcherException('Test error');
+                throw new SwitcherException('Test error', self::STATUS_TEST_ERROR);
         }
 
         $c = curl_init('https://dmsr.io/'.$this->urlId.'/'.$action);
@@ -119,13 +132,19 @@ class DeadManSwitch
         }
 
         if (!$response) {
-            throw new SwitcherException('Curl error: '.curl_error($c));
+            throw new SwitcherException('Curl error: '.curl_error($c), self::STATUS_ERROR_CURL);
         }
 
         curl_close($c);
 
-        if ($response !== 'ok') {
-            throw new SwitcherException($response);
+        if ($httpStatus >= 500) {
+            throw new SwitcherException('There was a server error on switcher.io.', self::STATUS_ERROR_500);
+        }
+
+        $responseDecoded = json_decode($response);
+
+        if ($responseDecoded['status-code'] !== self::STATUS_OK) {
+            throw new SwitcherException($responseDecoded['message'], $responseDecoded['status-code']);
         }
     }
 }
