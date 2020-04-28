@@ -141,7 +141,7 @@ class DeadManSwitch
             throw new SwitcherException('There was a server error on switcher.io.', self::STATUS_ERROR_500);
         }
 
-        $responseDecoded = json_decode($response);
+        $responseDecoded = json_decode($response, true);
 
         if ($responseDecoded['status-code'] !== self::STATUS_OK) {
             throw new SwitcherException($responseDecoded['message'], $responseDecoded['status-code']);
